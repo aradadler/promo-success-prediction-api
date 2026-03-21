@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promo-success-prediction-api"
+version = "0.1.0"
+description = "Production-style FastAPI and ML inference API skeleton."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Your Name" }
+]
+dependencies = [
+  "fastapi>=0.115.0,<1.0.0",
+  "numpy>=2.1.0,<3.0.0",
+  "pandas>=2.2.0,<3.0.0",
+  "pydantic>=2.8.0,<3.0.0",
+  "pydantic-settings>=2.4.0,<3.0.0",
+  "uvicorn[standard]>=0.30.0,<1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.27.0,<1.0.0",
+  "pytest>=8.3.0,<9.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
