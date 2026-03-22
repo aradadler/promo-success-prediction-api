@@ -11,3 +11,5 @@ models/
 data/promotions.csv
 
 .DS_Store
+*.log
+.ipynb_checkpoints/
