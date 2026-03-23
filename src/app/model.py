@@ -9,6 +9,8 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 from .features import MODEL_FEATURE_COLUMNS, build_features
 
@@ -35,16 +37,19 @@ def prepare_training_data(dataset: pd.DataFrame) -> tuple[pd.DataFrame, pd.Serie
     return X, y
 
 
-def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> LogisticRegression:
-    """Fit a simple logistic regression baseline."""
-    model = LogisticRegression(max_iter=1000, random_state=RANDOM_STATE)
+def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> Pipeline:
+    """Fit a scaled logistic regression baseline in one reproducible pipeline."""
+    model = Pipeline(
+        steps=[
+            ("scaler", StandardScaler()),
+            ("classifier", LogisticRegression(max_iter=1000, random_state=RANDOM_STATE)),
+        ]
+    )
     model.fit(X_train, y_train)
     return model
 
 
-def evaluate_model(
-    model: LogisticRegression, X_test: pd.DataFrame, y_test: pd.Series
-) -> dict[str, float]:
+def evaluate_model(model: Pipeline, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
     """Compute standard classification metrics for the held-out split."""
     predictions = model.predict(X_test)
     probabilities = model.predict_proba(X_test)[:, 1]
@@ -58,18 +63,18 @@ def evaluate_model(
     }
 
 
-def save_model(model: LogisticRegression, model_path: Path = MODEL_PATH) -> None:
+def save_model(model: Pipeline, model_path: Path = MODEL_PATH) -> None:
     """Persist the trained artifact for later inference use."""
     model_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(model, model_path)
 
 
-def load_model(model_path: Path = MODEL_PATH) -> LogisticRegression:
+def load_model(model_path: Path = MODEL_PATH) -> Pipeline:
     """Load the persisted trained model artifact."""
     return joblib.load(model_path)
 
 
-def run_training() -> LogisticRegression:
+def run_training() -> Pipeline:
     """Train, evaluate, and persist the baseline model."""
     dataset = load_training_data()
     X, y = prepare_training_data(dataset)
