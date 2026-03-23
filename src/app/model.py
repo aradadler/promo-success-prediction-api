@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 
 import joblib
@@ -72,6 +73,12 @@ def save_model(model: Pipeline, model_path: Path = MODEL_PATH) -> None:
 def load_model(model_path: Path = MODEL_PATH) -> Pipeline:
     """Load the persisted trained model artifact."""
     return joblib.load(model_path)
+
+
+@lru_cache(maxsize=1)
+def get_model() -> Pipeline:
+    """Load and cache the trained model so it is reused within the process."""
+    return load_model()
 
 
 def run_training() -> Pipeline:

@@ -4,15 +4,24 @@ from pydantic import BaseModel, Field
 
 
 class PredictionRequest(BaseModel):
-    """Placeholder request schema for inference input."""
+    """Validated request schema for pre-promotion prediction inputs."""
 
-    # Add feature fields here once the contract is defined.
-    example_feature: float = Field(default=0.0, description="Temporary placeholder field.")
+    price: float = Field(..., gt=0, description="Regular unit price before discount.")
+    discount_pct: float = Field(..., ge=0, le=1, description="Discount percentage expressed as a decimal.")
+    baseline_units: int = Field(..., gt=0, description="Expected baseline unit sales without the promotion.")
+    cogs: float = Field(..., gt=0, description="Cost of goods sold per unit.")
+    cannibalization_pct: float = Field(
+        ...,
+        ge=0,
+        le=1,
+        description="Expected share of promoted sales that cannibalize existing demand.",
+    )
+    duration_weeks: int = Field(..., gt=0, description="Promotion duration in weeks.")
 
 
 class PredictionResponse(BaseModel):
-    """Placeholder response schema for inference output."""
+    """Response schema for prediction outputs."""
 
-    prediction: float = Field(..., description="Predicted success score or probability.")
-    model_version: str = Field(..., description="Version of the loaded inference artifact.")
-
+    success_probability: float = Field(..., description="Predicted probability that the promotion will succeed.")
+    predicted_label: str = Field(..., description="Human-readable classification label derived from the score.")
+    confidence: str = Field(..., description="Qualitative confidence band for the prediction.")
