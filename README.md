@@ -274,21 +274,22 @@ That command:
 
 If your local environment uses `python3` instead of `python`, use the equivalent command with `python3`.
 
-### Run The API Locally
+### Running The API Locally
 
-Activate your environment, then start the FastAPI app with:
+1. Activate your conda environment.
+2. Install dependencies if needed.
+3. Start the API:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-or:
+If you are running from the repository root, use `--app-dir src` or set `PYTHONPATH=src` so the `app` package resolves correctly.
 
-```bash
-python -m uvicorn app.main:app --reload
-```
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
 
-If you are running from the repository root, use `--app-dir src` or set `PYTHONPATH=src` so the `app` package resolves correctly. Once the server is running, open `/docs` to explore and test the API interactively.
+Swagger UI lets you test the `/predict` endpoint directly from the browser.
 
 ## Tech Stack
 
