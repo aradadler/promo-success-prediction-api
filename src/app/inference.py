@@ -35,8 +35,26 @@ def predict_promotion_success(request: PredictionRequest) -> PredictionResponse:
     else:
         confidence = "LOW"
 
+    if success_probability < 0.2:
+        interpretation = "Very low likelihood of success"
+    elif success_probability <= 0.4:
+        interpretation = "Low likelihood of success"
+    elif success_probability <= 0.6:
+        interpretation = "Uncertain outcome"
+    elif success_probability <= 0.8:
+        interpretation = "Moderate likelihood of success"
+    else:
+        interpretation = "High likelihood of success"
+
+    if predicted_label == "FAILURE":
+        recommendation = "Consider reducing discount or improving margin"
+    else:
+        recommendation = "Promotion is likely viable - consider proceeding"
+
     return PredictionResponse(
         success_probability=success_probability,
         predicted_label=predicted_label,
         confidence=confidence,
+        interpretation=interpretation,
+        recommendation=recommendation,
     )

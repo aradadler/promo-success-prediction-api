@@ -25,3 +25,5 @@ class PredictionResponse(BaseModel):
     success_probability: float = Field(..., description="Predicted probability that the promotion will succeed.")
     predicted_label: str = Field(..., description="Human-readable classification label derived from the score.")
     confidence: str = Field(..., description="Qualitative confidence band for the prediction.")
+    interpretation: str = Field(..., description="Human-readable interpretation of the predicted probability.")
+    recommendation: str = Field(..., description="Suggested action based on the predicted outcome.")

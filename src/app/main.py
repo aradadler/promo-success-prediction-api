@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 
 from app.config import get_settings
+from app.inference import predict_promotion_success
+from app.schemas import PredictionRequest, PredictionResponse
 
 
 settings = get_settings()
@@ -19,3 +21,7 @@ def health_check() -> dict[str, str]:
     """Basic health endpoint placeholder."""
     return {"status": "ok"}
 
+
+@app.post("/predict", response_model=PredictionResponse, tags=["inference"])
+def predict_endpoint(payload: PredictionRequest) -> PredictionResponse:
+    return predict_promotion_success(payload)
